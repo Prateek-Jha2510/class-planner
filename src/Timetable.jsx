@@ -49,7 +49,7 @@ export default function Timetable({data,save,today}) {
       {mode==='import' && <><p>Paste the whole week as a JSON array. Use Mon through Sun and 24-hour times.</p><details><summary>View sample JSON</summary><pre>{sample}</pre></details><Field label="Timetable JSON"><textarea rows={8} name="json" required spellCheck="false" placeholder='[{"day":"Mon","subject":"Physics","start":"09:00","end":"10:00"}]'/></Field></>}
       {mode==='preset' && <><p>Environmental Engineering · Semester I, effective {SEMESTER}. Each continuous class block counts once.</p>
         <Field label="EN103 practical group"><select name="group" defaultValue={week.find(c=>c.code==='EN103' && c.kind.startsWith('Practical G'))?.kind.slice(-2)??''}><option value="">Shared classes only</option>{['G1','G2','G3','G4'].map(g=><option key={g}>{g}</option>)}</select></Field>
-        <label className="checkline"><input type="checkbox" name="tutorials" defaultChecked={week.some(c=>c.kind.includes('Tutorial'))}/> Include tutorials labelled G1/G2</label>
+        <label className="checkline"><input type="checkbox" name="tutorials" defaultChecked={!week.length || week.some(c=>c.kind.includes('Tutorial'))}/> Include tutorials labelled G1/G2</label>
         <label className="checkline"><input type="checkbox" name="activities" defaultChecked={week.some(c=>c.code==='ECC1')}/> Include ECC1 and Zero Hour</label>
       </>}
       {error && <p role="alert" className="error">{error}</p>}<button className="primary wide">{mode==='class'?'Save class':mode==='preset'?'Apply preset':'Import week'}</button>

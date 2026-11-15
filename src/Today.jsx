@@ -1,5 +1,7 @@
 import React,{useMemo,useState} from 'react';
 import {DAYS,STATUSES,dayAt,weekday,dateKey,offset,pretty,reminder,saveDay,weekAt} from './model.js';
+import {dtuWeek} from './preset.js';
+import {changeWeek} from './model.js';
 import {Icon,Tile,Empty,Modal,Field} from './ui.jsx';
 export default function Today({data,save,now,go}) {
   const today=dateKey(now);
@@ -41,6 +43,7 @@ export default function Today({data,save,now,go}) {
     {day.holiday && <p className="holiday">Holiday · All classes on this date are excluded.</p>}
     {day.slots.map(c=><Tile key={c.id} classItem={c}><div className="statuses">{STATUSES.map(s=><button disabled={day.holiday} aria-pressed={!day.holiday && c.status===s} className={s.toLowerCase()} key={s} onClick={()=>mark(c.id,s)}>{s}</button>)}</div></Tile>)}
     {!day.slots.length && <Empty title="No classes scheduled" icon="Today">{next ? 'Next class: '+next.slot.subject+' · '+pretty(next.date,{weekday:'short'})+' at '+next.slot.start+'.' : 'Add a class in Timetable to start planning.'}</Empty>}
+    {!weekAt(data,today).length && <button className="primary wide" onClick={()=>{if(save(changeWeek(data,today,dtuWeek())))go('Timetable');}}>Restore my DTU B19 timetable</button>}
     {date!==today && <button className="wide" onClick={()=>select(today)}>Back to today</button>}
     {weekAt(data,today).some(c=>c.id.startsWith('dtu-')) && <button className="textBtn" onClick={()=>go('Timetable')}>Edit B19 timetable or choose lab group <Icon name="right" size={15}/></button>}
     {picker && <Modal title="Choose a date" close={()=>setPicker(false)}><form onSubmit={e=>{e.preventDefault();select(e.currentTarget.elements.date.value);setPicker(false);}}><Field label="Attendance date"><input type="date" name="date" min="2000-01-01" max={today} defaultValue={date} required/></Field><button className="primary">Open schedule</button></form></Modal>}

@@ -31,7 +31,8 @@ export function cleanClass(row, index = 0, requireId = false) {
   check(isObj(row) && DAYS.includes(row.day),label + ' needs a day such as Mon.');
   check(validTime(row.start) && validTime(row.end) && row.start < row.end,label + ' needs HH:MM times with end after start.');
   const id = requireId ? row.id : uid();
-  check(validId(id),label + ' has an invalid ID.');
+  const legacyElective = /^dtu-(Tue|Thu)-8-AEC\/VAC$/.test(id);
+  check(validId(id) || legacyElective,label + ' has an invalid ID.');
   return {id, day:row.day, subject:line(row.subject,label + ' subject',100,true), start:row.start, end:row.end,
     room:line(row.room ?? '', 'room'), teacher:line(row.teacher ?? '', 'teacher'), code:line(row.code ?? '', 'code',32), kind:line(row.kind ?? '', 'type',60)};
 }

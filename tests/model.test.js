@@ -79,3 +79,21 @@ test('deadline comparisons use the phone clock and the end of an untimed day',()
   assert.equal(urgency({...task,date:tue},now)[0],'Tomorrow');
   assert.ok(deadline({...task,time:'14:00'})<deadline(task));
 });
+test('every built-in schedule survives closing and reopening the planner',()=>{
+  for(const group of ['', 'G1', 'G2', 'G3', 'G4']) {
+    const d=changeWeek(initial(mon),mon,dtuWeek(group,true,true));
+    assert.deepEqual(validateBackup(JSON.parse(JSON.stringify(d))),d);
+  }
+});
+test('1.0.0 AEC/VAC IDs in saved weeks and marked dates retain attendance',()=>{
+  let d=initial(tue);
+  for(const c of d.versions[0].week) {
+    if(c.code==='AEC/VAC') c.id=c.id.replace('AEC-VAC','AEC/VAC');
+  }
+  const day=dayAt(d,tue);
+  day.slots.find(c=>c.code==='AEC/VAC').status='Attended';
+  d=saveDay(d,tue,day);
+  const restored=validateBackup(JSON.parse(JSON.stringify(d)));
+  assert.deepEqual(restored,d);
+  assert.equal(stats(restored,tue).total.Attended,1);
+});

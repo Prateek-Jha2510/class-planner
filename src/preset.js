@@ -27,7 +27,7 @@ export function dtuWeek(group = '', activities = false, tutorials = true) {
     if (kind.startsWith('Tutorial')) return tutorials;
     return activities || !['ECC1','ZERO'].includes(code);
   }).map(([day,start,end,code,kind,room = '']) => ({
-    id: 'dtu-' + day + '-' + start + '-' + code, day, start:hour(start), end:hour(end),
+    id: 'dtu-' + day + '-' + start + '-' + code.replace('/', '-'), day, start:hour(start), end:hour(end),
     subject:courses[code][0], teacher:kind === 'Practical G4' ? 'RS' : courses[code][1], room, code, kind
   }));
 }

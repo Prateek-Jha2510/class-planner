@@ -29,7 +29,7 @@ jobs:
           fi
           npm run android:init
       - name: Use the shared debug signer for tagged releases
-        if: startsWith(github.ref, 'refs/tags/v') || (github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Publish Class Planner 1.0.0')
+        if: startsWith(github.ref, 'refs/tags/v') || (github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Release Class Planner v1.0.1')
         env:
           SIGNER: ${{ secrets.CLASS_PLANNER_DEBUG_KEY_B64 }}
         run: |
@@ -43,6 +43,17 @@ jobs:
       - name: Assemble APK
         working-directory: android
         run: bash gradlew --no-daemon assembleDebug
+      - name: Compare APK signing certificates
+        if: github.event.head_commit.message == 'Release Class Planner v1.0.1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v1.0.0 --repo "$GITHUB_REPOSITORY" --pattern Class-Planner-debug.apk --dir "$RUNNER_TEMP"
+          verifier=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          cert() { "$verifier" verify --print-certs "$1" | grep 'certificate SHA-256 digest:'; }
+          old=$(cert "$RUNNER_TEMP/Class-Planner-debug.apk")
+          new=$(cert android/app/build/outputs/apk/debug/app-debug.apk)
+          if [[ "$old" == "$new" ]]; then echo "MATCHING CERTIFICATES"; else echo "DIFFERENT CERTIFICATES"; fi
       - name: Name APK
         run: cp android/app/build/outputs/apk/debug/app-debug.apk Class-Planner-debug.apk
       - uses: actions/upload-artifact@v4
@@ -53,7 +64,7 @@ jobs:
 
   release:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v') || (github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Publish Class Planner 1.0.0')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Release Class Planner v1.0.1')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -64,7 +75,7 @@ jobs:
       - name: Publish APK to release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'v1.0.0' }}
+          TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'v1.0.1' }}
         run: |
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" Class-Planner-debug.apk --repo "$GITHUB_REPOSITORY" --clobber
