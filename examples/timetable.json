@@ -1,0 +1,4 @@
+[
+  {"day":"Mon","subject":"Mathematics I","start":"10:00","end":"11:00","room":"SPS10","teacher":"Dr. Mamta Rani","code":"AM101","kind":"Lecture"},
+  {"day":"Tue","subject":"Chemistry","start":"10:00","end":"12:00","room":"SPS12","teacher":"Dr. Priyanka","code":"AC101","kind":"Lecture"}
+]
