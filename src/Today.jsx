@@ -1,5 +1,6 @@
 import React,{useMemo,useState} from 'react';
 import {DAYS,STATUSES,dayAt,weekday,dateKey,offset,pretty,reminder,saveDay,weekAt} from './model.js';
+import {messMenu} from './menu.js';
 import {dtuWeek} from './preset.js';
 import {changeWeek} from './model.js';
 import {Icon,Tile,Empty,Modal,Field} from './ui.jsx';
@@ -36,6 +37,12 @@ export default function Today({data,save,now,go}) {
         return <button key={d} disabled={key>today} aria-pressed={key===date} aria-label={pretty(key,{dateStyle:'full'})} onClick={()=>select(key)}><small>{d}</small><strong>{Number(key.slice(-2))}</strong></button>;
       })}</div>
     </section>
+    <details className="completed">
+      <summary>Menu today · {pretty(today,{weekday:'long'})}</summary>
+      <dl>{Object.entries(messMenu[weekday(today)]).map(([meal,food])=>
+        <React.Fragment key={meal}><dt className="kicker">{meal}</dt><dd style={{margin:'0 0 14px'}}>{food}</dd></React.Fragment>
+      )}</dl>
+    </details>
     <div className="metrics"><div className="metric"><Icon name="Attendance"/><span><b>{marked}<em> / {day.slots.length}</em></b><small>Classes marked</small></span></div>
     <button className="metric" onClick={()=>go('Homework')}><Icon name="Homework"/><span><b>{pending}</b><small>Pending homework</small></span><Icon name="right" size={15}/></button></div>
     {missing.count>0 && <button className="notice" onClick={()=>select(missing.first)}>{missing.count} unmarked past {missing.count===1?'class':'classes'} <span>Review →</span></button>}

@@ -36,6 +36,8 @@ Open the maintainer's public GitHub repo → Releases → latest release → Ass
 
 ## 2. Use the app
 
+Open **Today → Menu today** to see breakfast, lunch, snacks and dinner for the current weekday, even while offline. The weekly menu is bundled in src/menu.js. Tuesday snacks retain the mess sheet’s [E] and [O] labels.
+
 - **Today** shows the selected day's classes in order. Tap a status to mark it, another to change it, or the same status to clear it. Pick date opens a previous day. Marking a holiday excludes its classes and undo restores the previous marks. Tap the reminder to open the earliest missed date. The homework counter opens pending assignments.
 - **Attendance** shows overall and subject counts. Three Attended and one Absent gives 75%, regardless of how many classes were Bunked, Cancelled or Holiday. Zero counted classes show --. Green starts at your chosen target (75% initially), yellow at 60%, and lower values are red.
 - **Homework** lets you choose a timetable subject, title, due date, optional time and description. Pending tasks sort by deadline. Overdue tasks are red, today's and tomorrow's are orange. An untimed task is due at the end of its local day. Check the box to complete a task. Expand Completed to reopen, delete or clear it.
